@@ -52,44 +52,44 @@
 
 :root {
 	/* Background and foreground colors */
-	--background: #EAEFF9;
-	--foreground: #041C32;
+	--background: #eaeff9;
+	--foreground: #041c32;
 
 	/* Card and popover */
-	--card: #FFFFFF;
-	--card-foreground: #2A4A5C;
-	--popover: #FFFFFF;
-	--popover-foreground: #2A4A5C;
+	--card: #ffffff;
+	--card-foreground: #2a4a5c;
+	--popover: #ffffff;
+	--popover-foreground: #2a4a5c;
 
 	--primary: #6a8ba8;
-	--primary-foreground: #FFFFFF;
+	--primary-foreground: #ffffff;
 
 	--secondary: #bea11d;
-	--secondary-foreground: #2A4A5C;
+	--secondary-foreground: #2a4a5c;
 
-	--muted: #D5E8F2;
-	--muted-foreground: #5A6A72;
+	--muted: #e5edf5;
+	--muted-foreground: #5a6a72;
 
-	--accent: #dc6cbc;
-	--accent-foreground: #5A6A72;
+	--accent: #8eaccd;
+	--accent-foreground: #041c32;
 
 	/* UI feedback colors */
-	--success: #4CAF50;
-	--warning: #ECB365;
-	--destructive: #E74C3C;
-	--destructive-foreground: #FFFFFF;
+	--success: #4caf50;
+	--warning: #ecb365;
+	--destructive: #e74c3c;
+	--destructive-foreground: #ffffff;
 
 	/* Border, input, and ring colors */
-	--border: #BEDAED;
-	--input: #D9E9F2;
-	--ring: #8EACCD;
+	--border: #bedaed;
+	--input: #d9e9f2;
+	--ring: #8eaccd;
 
 	/* Chart colors */
-	--chart-1: #8EACCD;
-	--chart-2: #D2E0FB;
-	--chart-3: #FEF9D9;
-	--chart-4: #ECB365;
-	--chart-5: #A0B6DA;
+	--chart-1: #8eaccd;
+	--chart-2: #d2e0fb;
+	--chart-3: #fef9d9;
+	--chart-4: #ecb365;
+	--chart-5: #a0b6da;
 
 	/* Sidebar colors */
 	--sidebar: var(--card);
@@ -107,13 +107,13 @@
 
 .dark {
 	/* Dark theme base shades */
-	--background: #041C32;
+	--background: #041c32;
 	--foreground: #ffffff;
 
 	/* Card and popover */
-	--card: #04293A;
+	--card: #04293a;
 	--card-foreground: #ffffff;
-	--popover: #04293A;
+	--popover: #04293a;
 	--popover-foreground: #ffffff;
 
 	/* Primary colors */
@@ -122,33 +122,33 @@
 
 	/* Secondary colors */
 	--secondary: #e1a757;
-	--secondary-foreground: #041C32;
+	--secondary-foreground: #041c32;
 
 	/* Muted colors */
-	--muted: #04293A;
-	--muted-foreground: #BBBBBB;
+	--muted: #0a3a50;
+	--muted-foreground: #bbbbbb;
 
 	/* Accent colors */
-	--accent: #b34a86;
+	--accent: #3a7ca5;
 	--accent-foreground: #ffffff;
 
 	/* UI feedback colors - using the provided palette */
-	--success: #4CAF50;
-	--warning: #ECB365;
-	--destructive: #E74C3C;
+	--success: #4caf50;
+	--warning: #ecb365;
+	--destructive: #e74c3c;
 	--destructive-foreground: #ffffff;
 
 	/* Border, input, and ring colors */
 	--border: #064663;
-	--input: #04293A;
+	--input: #04293a;
 	--ring: #064663;
 
 	/* Chart colors - adjusted for dark mode with new palette */
-	--chart-1: #041C32;
-	--chart-2: #04293A;
+	--chart-1: #041c32;
+	--chart-2: #04293a;
 	--chart-3: #064663;
-	--chart-4: #ECB365;
-	--chart-5: #7DA0AB;
+	--chart-4: #ecb365;
+	--chart-5: #7da0ab;
 
 	/* Sidebar colors */
 	--sidebar: var(--card);

@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { useAuth } from "@/hooks";
 
 export default function Navbar() {
 	const { theme, setTheme } = useTheme();
+	const { user, isAuthenticated, logout } = useAuth();
 	const [mounted, setMounted] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
 	useEffect(() => {
 		setMounted(true);
@@ -15,6 +18,10 @@ export default function Navbar() {
 
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
+	};
+
+	const toggleProfileMenu = () => {
+		setIsProfileMenuOpen(!isProfileMenuOpen);
 	};
 
 	return (
@@ -94,57 +101,113 @@ export default function Navbar() {
 							</button>
 						)}
 
-						<Link
-							href="/register"
-							className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
-						>
-							Sign Up
-						</Link>
+						{isAuthenticated ? (
+							<div className="relative">
+								<button
+									onClick={toggleProfileMenu}
+									className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+								>
+									<span className="sr-only">
+										Open user menu
+									</span>
+									<div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+										{user?.username
+											?.charAt(0)
+											.toUpperCase() || "U"}
+									</div>
+								</button>
+								{/* Profile dropdown */}
+								{isProfileMenuOpen && (
+									<div
+										className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-card ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+										role="menu"
+										aria-orientation="vertical"
+										aria-labelledby="user-menu"
+									>
+										<div className="px-4 py-2 text-sm text-foreground border-b border-border">
+											Signed in as{" "}
+											<span className="font-semibold">
+												{user?.username}
+											</span>
+										</div>
+										<Link
+											href="/profile"
+											className="block px-4 py-2 text-sm text-foreground hover:bg-primary/10"
+											role="menuitem"
+										>
+											Your Profile
+										</Link>
+										<button
+											onClick={logout}
+											className="block w-full text-left px-4 py-2 text-sm text-foreground hover:bg-primary/10"
+											role="menuitem"
+										>
+											Sign out
+										</button>
+									</div>
+								)}
+							</div>
+						) : (
+							<>
+								<Link
+									href="/login"
+									className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-primary hover:bg-primary/10"
+								>
+									Sign In
+								</Link>
+								<Link
+									href="/register"
+									className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+								>
+									Sign Up
+								</Link>
+							</>
+						)}
 					</div>
+				</div>
 
-					{/* Mobile menu button */}
-					<div className="flex items-center sm:hidden">
-						<button
-							onClick={toggleMenu}
-							className="inline-flex items-center justify-center p-2 rounded-md text-accent-foreground hover:bg-accent/20 focus:outline-none"
-							aria-expanded="false"
-						>
-							<span className="sr-only">Open main menu</span>
-							{!isMenuOpen ? (
-								<svg
-									className="block h-6 w-6"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M4 6h16M4 12h16M4 18h16"
-									/>
-								</svg>
-							) : (
-								<svg
-									className="block h-6 w-6"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M6 18L18 6M6 6l12 12"
-									/>
-								</svg>
-							)}
-						</button>
-					</div>
+				{/* Mobile menu button */}
+				<div className="flex items-center sm:hidden">
+					<button
+						onClick={toggleMenu}
+						className="inline-flex items-center justify-center p-2 rounded-md text-accent-foreground hover:bg-accent/20 focus:outline-none"
+						aria-expanded="false"
+					>
+						<span className="sr-only">Open main menu</span>
+						{!isMenuOpen ? (
+							<svg
+								className="block h-6 w-6"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								/>
+							</svg>
+						) : (
+							<svg
+								className="block h-6 w-6"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						)}
+					</button>
 				</div>
 			</div>
 
@@ -215,12 +278,36 @@ export default function Navbar() {
 								</button>
 							)}
 						</div>
-						<Link
-							href="/register"
-							className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
-						>
-							Sign Up
-						</Link>
+
+						{isAuthenticated ? (
+							<div className="flex items-center">
+								<div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center mr-2">
+									{user?.username?.charAt(0).toUpperCase() ||
+										"U"}
+								</div>
+								<button
+									onClick={logout}
+									className="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium bg-primary/10 text-primary hover:bg-primary/20"
+								>
+									Sign out
+								</button>
+							</div>
+						) : (
+							<div className="flex space-x-2">
+								<Link
+									href="/login"
+									className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-primary hover:bg-primary/10"
+								>
+									Sign In
+								</Link>
+								<Link
+									href="/register"
+									className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+								>
+									Sign Up
+								</Link>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
