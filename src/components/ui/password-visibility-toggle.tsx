@@ -91,24 +91,26 @@ export function PasswordInput({
 	};
 
 	return (
-		<div className="relative">
-			<input
-				id={id}
-				name={name}
-				type={isVisible ? "text" : "password"}
-				autoComplete={autoComplete}
-				required={required}
-				placeholder={placeholder}
-				className={`appearance-none block w-full px-3 py-2 border ${
-					hasError ? "border-destructive" : "border-border"
-				} rounded-md shadow-sm placeholder-muted-foreground focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background text-foreground pr-10 ${className}`}
-				value={value}
-				onChange={onChange}
-			/>
-			<PasswordVisibilityToggle
-				isVisible={isVisible}
-				onToggle={toggleVisibility}
-			/>
+		<div className="w-full">
+			<div className="relative">
+				<input
+					id={id}
+					name={name}
+					type={isVisible ? "text" : "password"}
+					autoComplete={autoComplete}
+					required={required}
+					placeholder={placeholder}
+					className={`appearance-none block w-full px-3 py-2 border ${
+						hasError ? "border-destructive" : "border-border"
+					} rounded-md shadow-sm placeholder-muted-foreground focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-background text-foreground pr-10 ${className}`}
+					value={value}
+					onChange={onChange}
+				/>
+				<PasswordVisibilityToggle
+					isVisible={isVisible}
+					onToggle={toggleVisibility}
+				/>
+			</div>
 			{hasError && errorMessage && (
 				<p className="mt-1 text-sm text-destructive">{errorMessage}</p>
 			)}
