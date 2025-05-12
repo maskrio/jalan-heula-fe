@@ -170,6 +170,60 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Articles Preview Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Latest Travel Articles</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">Explore our collection of exclusive travel content</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+              <div className="bg-card p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition-shadow">
+                <div className="h-40 bg-primary/10 rounded-lg mb-4 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-primary opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 21V5a2 2 0 012-2h14a2 2 0 012 2v16l-3-3.5-4 3-4-3-4 3L3 21z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Travel Guides</h3>
+                <p className="text-muted-foreground mb-4">Comprehensive guides to help you plan your perfect trip.</p>
+                <Link href="/articles" className="text-primary hover:text-primary/80 font-medium">View articles →</Link>
+              </div>
+              
+              <div className="bg-card p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition-shadow">
+                <div className="h-40 bg-primary/10 rounded-lg mb-4 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-primary opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Hidden Destinations</h3>
+                <p className="text-muted-foreground mb-4">Discover off-the-beaten-path locations that most tourists miss.</p>
+                <Link href="/articles" className="text-primary hover:text-primary/80 font-medium">View articles →</Link>
+              </div>
+              
+              <div className="bg-card p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition-shadow">
+                <div className="h-40 bg-primary/10 rounded-lg mb-4 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-primary opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Travel Tips</h3>
+                <p className="text-muted-foreground mb-4">Expert advice to make your travel experience smooth and enjoyable.</p>
+                <Link href="/articles" className="text-primary hover:text-primary/80 font-medium">View articles →</Link>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <Link 
+                href="/articles" 
+                className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+              >
+                Explore All Articles
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* Testimonials Section */}
         <section className="py-20 bg-muted/30">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">

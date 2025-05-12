@@ -3,6 +3,7 @@ import * as yup from "yup";
 // Re-export all validation schemas and utilities
 export * from "./common";
 export * from "./auth";
+export * from "./article";
 
 // Generic validation function that can be used with any schema
 export const validateForm = async <T extends Record<string, unknown>>(

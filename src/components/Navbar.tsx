@@ -37,12 +37,17 @@ export default function Navbar() {
 								Jalan-Heula
 							</Link>
 						</div>
-						<div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-							<Link
+						<div className="hidden sm:ml-6 sm:flex sm:space-x-8">							<Link
 								href="/"
 								className="inline-flex items-center px-1 pt-1 border-b-2 border-primary text-sm font-medium"
 							>
 								Home
+							</Link>
+							<Link
+								href="/articles"
+								className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-accent hover:text-accent text-sm font-medium"
+							>
+								Articles
 							</Link>
 							<Link
 								href="/about"
@@ -212,13 +217,18 @@ export default function Navbar() {
 			</div>
 
 			{/* Mobile menu, show/hide based on menu state */}
-			<div className={isMenuOpen ? "block sm:hidden" : "hidden"}>
-				<div className="pt-2 pb-3 space-y-1">
+			<div className={isMenuOpen ? "block sm:hidden" : "hidden"}>				<div className="pt-2 pb-3 space-y-1">
 					<Link
 						href="/"
 						className="bg-primary/10 border-l-4 border-primary text-primary block pl-3 pr-4 py-2 text-base font-medium"
 					>
 						Home
+					</Link>
+					<Link
+						href="/articles"
+						className="hover:bg-accent/10 border-l-4 border-transparent hover:border-accent block pl-3 pr-4 py-2 text-base font-medium"
+					>
+						Articles
 					</Link>
 					<Link
 						href="/about"

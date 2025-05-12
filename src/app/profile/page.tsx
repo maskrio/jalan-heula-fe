@@ -3,7 +3,16 @@
 import { useAuth } from "@/hooks";
 import Navbar from "@/components/Navbar";
 
-export default function ProfilePage() {
+interface ProfilePageProps {
+	params?: Promise<{ [key: string]: string }>;
+
+	searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default function ProfilePage({
+	params: _params,
+	searchParams: _searchParams,
+}: ProfilePageProps) {
 	const { user, loading } = useAuth();
 
 	if (loading) {

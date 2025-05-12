@@ -4,7 +4,17 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import LoginForm from "@/components/LoginForm";
 
-export default function LoginPage() {
+interface LoginPageProps {
+	params?: Promise<{ [key: string]: string }>;
+
+	searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+
+}
+
+export default function LoginPage({
+	params: _params,
+	searchParams: _searchParams
+}: LoginPageProps) {
 	return (
 		<div>
 			<Navbar />
