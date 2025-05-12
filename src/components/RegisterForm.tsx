@@ -5,7 +5,8 @@ import { useRegister } from "@/hooks";
 import { PasswordInput } from "@/components/ui/password-visibility-toggle";
 
 export default function RegisterForm() {
-	const { register, isLoading, error } = useRegister();	const [formData, setFormData] = useState({
+	const { register, isLoading, error } = useRegister();
+	const [formData, setFormData] = useState({
 		username: "",
 		email: "",
 		password: "",
@@ -66,7 +67,6 @@ export default function RegisterForm() {
 		}
 	};
 
-
 	return (
 		<form className="mt-8 space-y-6" onSubmit={handleSubmit}>
 			<div className="rounded-md shadow-sm -space-y-px">
@@ -90,9 +90,8 @@ export default function RegisterForm() {
 						} rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-background text-foreground`}
 						placeholder="John Doe"
 						value={formData.username}
-						onChange={handleChange}
-					/>
-					{formErrors.name && (
+						onChange={handleChange}					/>
+					{formErrors.username && (
 						<p className="mt-1 text-sm text-destructive">
 							{formErrors.username}
 						</p>
@@ -135,7 +134,7 @@ export default function RegisterForm() {
 					>
 						Password
 					</label>
-					
+
 					<PasswordInput
 						id="password"
 						name="password"
@@ -146,41 +145,29 @@ export default function RegisterForm() {
 						required
 						autoComplete="current-password"
 					/>
-					
+
 					{formErrors.password && (
 						<p className="mt-1 text-sm text-destructive">
 							{formErrors.password}
 						</p>
 					)}
-				</div>
-
-				<div className="mb-4">
+				</div>				<div className="mb-4">
 					<label
 						htmlFor="confirmPassword"
 						className="block text-sm font-medium text-foreground mb-1"
 					>
 						Confirm Password
 					</label>
-					<input
+					<PasswordInput
 						id="confirmPassword"
 						name="confirmPassword"
-						type="password"
-						autoComplete="new-password"
-						required
-						className={`appearance-none relative block w-full px-3 py-2 border ${
-							formErrors.confirmPassword
-								? "border-destructive"
-								: "border-border"
-						} rounded-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-background text-foreground`}
-						placeholder="••••••••"
 						value={formData.confirmPassword}
 						onChange={handleChange}
+						hasError={!!formErrors.confirmPassword}
+						errorMessage={formErrors.confirmPassword}
+						required
+						autoComplete="new-password"
 					/>
-					{formErrors.confirmPassword && (
-						<p className="mt-1 text-sm text-destructive">
-							{formErrors.confirmPassword}
-						</p>
-					)}
 				</div>
 			</div>
 
@@ -227,12 +214,11 @@ export default function RegisterForm() {
 								viewBox="0 0 20 20"
 								fill="currentColor"
 								aria-hidden="true"
-							>
-								<path
+							>								<path
 									fillRule="evenodd"
 									d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
 									clipRule="evenodd"
-								/>x 
+								/>
 							</svg>
 						</div>
 						<div className="ml-3">

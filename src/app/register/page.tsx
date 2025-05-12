@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import RegisterForm from "@/components/RegisterForm";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";

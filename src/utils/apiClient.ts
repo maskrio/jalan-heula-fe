@@ -1,5 +1,4 @@
 import { getBaseUrl } from "@/utils";
-
 /**
  * HTTP request methods
  */
@@ -12,9 +11,10 @@ export interface RequestOptions {
 	method?: HttpMethod;
 	headers?: Record<string, string>;
 	params?: Record<string, string>;
-	data?: any;
+	data?: unknown;
 	token?: string;
 	contentType?: "json" | "form-urlencoded" | "multipart";
+	showError?: boolean;
 }
 
 /**
@@ -26,8 +26,7 @@ export const apiClient = {
 	 * @param endpoint API endpoint (without base URL)
 	 * @param options Request options
 	 * @returns Response data
-	 */
-	async request<T>(
+	 */ async request<T>(
 		endpoint: string,
 		options: RequestOptions = {}
 	): Promise<T> {
@@ -61,8 +60,6 @@ export const apiClient = {
 				requestHeaders["Content-Type"] =
 					"application/x-www-form-urlencoded";
 			}
-			// For multipart/form-data, don't set the Content-Type header
-			// as the browser will set it with the correct boundary
 		}
 
 		// Add authorization header if token is provided
@@ -93,25 +90,58 @@ export const apiClient = {
 				requestOptions.body = data;
 			}
 		}
-
 		try {
-			const response = await fetch(url.toString(), requestOptions);
-
-			// Handle non-OK responses
+			const response = await fetch(url.toString(), requestOptions); // Handle non-OK responses
 			if (!response.ok) {
-				const errorData = await response.json().catch(() => null);
+				// Try to parse the error response as JSON first
+				let errorData;
+				let errorMessage = null;
+
+				try {
+					const responseText = await response.text();
+					errorData = JSON.parse(responseText);
+
+					// Extract error message with better error detection
+					if (
+						errorData.error &&
+						typeof errorData.error === "object"
+					) {
+						errorMessage =
+							errorData.error.message ||
+							errorData.error.details ||
+							null;
+					} else if (errorData.message) {
+						errorMessage = errorData.message;
+					}
+				} catch (parseError) {
+					// If parsing fails, use the status text
+					throw {
+						status: response.status,
+						statusText: response.statusText,
+						message: parseError,
+						response: { data: await response.text() },
+					};
+				}
+
+				// Throw with structured error data from API
 				throw {
 					status: response.status,
 					statusText: response.statusText,
+					message: errorMessage || response.statusText,
+					error: errorData.error || errorData,
 					response: { data: errorData },
 				};
 			}
-
-			// Parse and return response data
-			// Try to parse as JSON, fallback to text if not valid JSON
-			const responseData = await response.json().catch(async () => {
-				return await response.text();
-			});
+			let responseData: T;
+			try {
+				responseData = await response.json();
+			} catch {
+				throw {
+					status: response.status,
+					statusText: response.statusText,
+					response: { data: await response.text() },
+				};
+			}
 
 			return responseData as T;
 		} catch (error) {
@@ -139,10 +169,9 @@ export const apiClient = {
 	 * @param data Request body data
 	 * @param options Request options
 	 * @returns Response data
-	 */
-	async post<T>(
+	 */ async post<T>(
 		endpoint: string,
-		data?: any,
+		data?: unknown,
 		options: Omit<RequestOptions, "method" | "data"> = {}
 	): Promise<T> {
 		return this.request<T>(endpoint, { ...options, method: "POST", data });
@@ -154,10 +183,9 @@ export const apiClient = {
 	 * @param data Request body data
 	 * @param options Request options
 	 * @returns Response data
-	 */
-	async put<T>(
+	 */ async put<T>(
 		endpoint: string,
-		data?: any,
+		data?: unknown,
 		options: Omit<RequestOptions, "method" | "data"> = {}
 	): Promise<T> {
 		return this.request<T>(endpoint, { ...options, method: "PUT", data });
@@ -182,10 +210,9 @@ export const apiClient = {
 	 * @param data Request body data
 	 * @param options Request options
 	 * @returns Response data
-	 */
-	async patch<T>(
+	 */ async patch<T>(
 		endpoint: string,
-		data?: any,
+		data?: unknown,
 		options: Omit<RequestOptions, "method" | "data"> = {}
 	): Promise<T> {
 		return this.request<T>(endpoint, { ...options, method: "PATCH", data });
