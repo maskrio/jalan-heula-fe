@@ -1,48 +1,30 @@
 import { useState } from "react";
-import { authService } from "@/service";
 import { LoginCredentials } from "@/types";
 import { useRouter } from "next/navigation";
-import { AppError } from "@/utils/errorUtils";
+import { useAuthStore } from "@/store/authStore";
 
 export function useLogin() {
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const { login: storeLogin, loading, error } = useAuthStore();
 	const [success, setSuccess] = useState(false);
 	const router = useRouter();
 
 	const login = async (data: LoginCredentials) => {
-		setIsLoading(true);
-		setError(null);
 		setSuccess(false);
+		
 		try {
-			const response = await authService.login(data);
-			setSuccess(true);
-
-			router.push("/");
-
-			return response;
-		} catch (err: unknown) {
-			if (
-				err &&
-				typeof err === "object" &&
-				"type" in err &&
-				"message" in err
-			) {
-				const appError = err as AppError;
-				setError(appError.message);
-			} else if (err instanceof Error) {
-				setError(err.message);
-			} else {
-				setError(
-					"Login failed. Please check your credentials and try again."
-				);
+			const response = await storeLogin(data);
+			
+			if (response) {
+				setSuccess(true);
+				router.push("/");
 			}
-
+			
+			return response;
+		} catch (err) {
+			console.error("Login failed:", err);
 			return null;
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
-	return { login, isLoading, error, success };
+	return { login, isLoading: loading, error, success };
 }

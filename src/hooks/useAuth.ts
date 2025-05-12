@@ -1,43 +1,24 @@
-import { useState, useEffect } from "react";
-import { authService } from "@/service";
-import { User } from "@/types";
+import { useEffect } from "react";
+import { useAuthStore } from "@/store/authStore";
 
 export function useAuth() {
-	const [user, setUser] = useState<User["user"] | null>(null);
-	const [loading, setLoading] = useState(true);
+	const { 
+		user,
+		loading,
+		isAuthenticated,
+		logout,
+		checkAuth
+	} = useAuthStore();
+
+	// Check authentication status on load
 	useEffect(() => {
-		const loadUser = async () => {
-			try {
-				if (authService.isAuthenticated()) {
-					const currentUser = authService.getCurrentUser();
-					if (currentUser) {
-						setUser(currentUser);
-					}
-				}
-			} catch (error) {
-				console.error("Error loading user:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		loadUser();
-	}, []);
-
-	const saveUser = (userData: User) => {
-		authService.saveUserData(userData);
-		setUser(userData.user);
-	};
-	const logout = () => {
-		authService.logout();
-		setUser(null);
-	};
+		checkAuth();
+	}, [checkAuth]);
 
 	return {
 		user,
 		loading,
-		isAuthenticated: !!user,
-		saveUser,
+		isAuthenticated,
 		logout,
 	};
 }

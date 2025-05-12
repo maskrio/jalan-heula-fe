@@ -1,8 +1,6 @@
 import { authRepository } from "@/repository";
 import { RegisterCredentials, LoginCredentials, User } from "@/types";
 import Cookies from "js-cookie";
-import { toast } from "@/hooks";
-import { AppError } from "@/utils/errorUtils";
 
 // Simple client-side authentication service
 export const authService = {
@@ -19,14 +17,8 @@ export const authService = {
 				sameSite: "strict",
 				secure: process.env.NODE_ENV === "production",
 			});
-
-			toast({
-				title: "Authentication Successful",
-				description: `Welcome ${
-					userData.user.username || userData.user.email || "back"
-				}!`,
-				variant: "default",
-			});
+			
+			// Toast notifications are now managed by Zustand
 		}
 	},
 	/**
@@ -39,13 +31,6 @@ export const authService = {
 			this.saveUserData(response);
 			return response;
 		} catch (error) {
-			const appError = error as AppError;
-			toast({
-				title: "Registration Failed",
-				description: appError.message,
-				variant: "destructive",
-			});
-
 			throw error;
 		}
 	},
@@ -59,30 +44,17 @@ export const authService = {
 			this.saveUserData(response);
 			return response;
 		} catch (error) {
-			const appError = error as AppError;
-			toast({
-				title: "Login Failed",
-				description: appError.message,
-				variant: "destructive",
-			});
-
+			// No toast here - Zustand will handle the notifications
 			throw error;
 		}
 	},
 	/**
 	 * Log out the current user
-	 */ logout(): void {
+	 */ 
+	logout(): void {
 		localStorage.removeItem("auth_token");
 		localStorage.removeItem("user_data");
-
 		Cookies.remove("auth_token", { path: "/" });
-
-		// Show success toast for logout
-		toast({
-			title: "Logged Out",
-			description: "You have been successfully logged out.",
-			variant: "default",
-		});
 	},
 
 	/**
@@ -113,17 +85,7 @@ export const authService = {
 			try {
 				const parsed = JSON.parse(userData);
 				return parsed.user;
-			} catch (e) {
-				console.error("Error parsing user data:", e);
-
-				toast({
-					title: "Session Error",
-					description:
-						"Your session data is corrupted. Please log in again.",
-					variant: "destructive",
-				});
-
-				// Clean up corrupted data
+			} catch {
 				this.logout();
 				return null;
 			}
