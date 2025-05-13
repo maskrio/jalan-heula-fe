@@ -37,51 +37,53 @@ export default function Navbar() {
 	return (
 		<nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border shadow-sm">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex justify-between h-16">
-					<div className="flex">
-						<div className="flex-shrink-0 flex items-center">
-							<Link
-								href="/"
-								className="text-xl font-bold text-primary"
-							>
-								Jalan-Heula
-							</Link>
-						</div>{" "}
-						<div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-							{" "}
-							<Link
-								href="/"
-								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-									isActive("/")
-										? "border-primary text-primary"
-										: "border-transparent hover:border-accent hover:text-accent"
-								}`}
-							>
-								Home
-							</Link>
-							<Link
-								href="/articles"
-								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-									isActive("/articles")
-										? "border-primary text-primary"
-										: "border-transparent hover:border-accent hover:text-accent"
-								}`}
-							>
-								Articles
-							</Link>
-							<Link
-								href="/manage-categories"
-								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-									isActive("/manage-categories")
-										? "border-primary text-primary"
-										: "border-transparent hover:border-accent hover:text-accent"
-								}`}
-							>
-								Manage Categories
-							</Link>
-						</div>
+				<div className="flex justify-between items-center h-16">
+					{/* Logo - visible on all screen sizes */}
+					<div className="flex-shrink-0 flex items-center">
+						<Link
+							href="/"
+							className="text-xl font-bold text-primary"
+						>
+							Jalan-Heula
+						</Link>
 					</div>
-					<div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+
+					{/* Desktop navigation links */}
+					<div className="hidden sm:flex sm:items-center sm:ml-6 sm:space-x-8">
+						<Link
+							href="/"
+							className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+								isActive("/")
+									? "border-primary text-primary"
+									: "border-transparent hover:border-accent hover:text-accent"
+							}`}
+						>
+							Home
+						</Link>
+						<Link
+							href="/articles"
+							className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+								isActive("/articles")
+									? "border-primary text-primary"
+									: "border-transparent hover:border-accent hover:text-accent"
+							}`}
+						>
+							Articles
+						</Link>
+						<Link
+							href="/manage-categories"
+							className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+								isActive("/manage-categories")
+									? "border-primary text-primary"
+									: "border-transparent hover:border-accent hover:text-accent"
+							}`}
+						>
+							Manage Categories
+						</Link>
+					</div>
+
+					{/* Desktop right side controls */}
+					<div className="hidden sm:flex sm:items-center sm:space-x-4">
 						{mounted && (
 							<button
 								onClick={() =>
@@ -181,55 +183,55 @@ export default function Navbar() {
 							</>
 						)}
 					</div>
-				</div>
 
-				{/* Mobile menu button */}
-				<div className="flex items-center sm:hidden">
-					<button
-						onClick={toggleMenu}
-						className="inline-flex items-center justify-center p-2 rounded-md text-accent-foreground hover:bg-accent/20 focus:outline-none"
-						aria-expanded="false"
-					>
-						<span className="sr-only">Open main menu</span>
-						{!isMenuOpen ? (
-							<svg
-								className="block h-6 w-6"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									d="M4 6h16M4 12h16M4 18h16"
-								/>
-							</svg>
-						) : (
-							<svg
-								className="block h-6 w-6"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
-						)}
-					</button>
+					{/* Mobile menu button */}
+					<div className="flex items-center sm:hidden">
+						<button
+							onClick={toggleMenu}
+							className="inline-flex items-center justify-center p-2 rounded-md text-accent-foreground hover:bg-accent/20 focus:outline-none"
+							aria-expanded="false"
+						>
+							<span className="sr-only">Open main menu</span>
+							{!isMenuOpen ? (
+								<svg
+									className="block h-6 w-6"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									aria-hidden="true"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M4 6h16M4 12h16M4 18h16"
+									/>
+								</svg>
+							) : (
+								<svg
+									className="block h-6 w-6"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									aria-hidden="true"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M6 18L18 6M6 6l12 12"
+									/>
+								</svg>
+							)}
+						</button>
+					</div>
 				</div>
 			</div>
-			{/* Mobile menu, show/hide based on menu state */}{" "}
+
+			{/* Mobile menu, show/hide based on menu state */}
 			<div className={isMenuOpen ? "block sm:hidden" : "hidden"}>
-				{" "}
 				<div className="pt-2 pb-3 space-y-1">
 					<Link
 						href="/"
