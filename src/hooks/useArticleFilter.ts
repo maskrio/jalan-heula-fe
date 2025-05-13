@@ -36,10 +36,11 @@ export function useArticleFilter() {
 		onSubmit: async (values) => {
 			setIsSubmitting(true);
 
-			try {				// Convert form values to API filter format
+			try {
+				// Convert form values to API filter format
 				const filters: ArticleFilters = {
 					searchTerm: values.searchTerm || undefined,
-					categoryName: values.category || undefined, 
+					categoryName: values.category || undefined,
 					sortBy: values.sortBy,
 				};
 
@@ -51,25 +52,7 @@ export function useArticleFilter() {
 				setIsSubmitting(false);
 			}
 		},
-	});	// Handle sort change without requiring a form submit
-	const handleSortChange = useCallback(
-		(sortValue: "latest" | "oldest" | "title_asc" | "title_desc") => {
-			setValues({ sortBy: sortValue });
-
-			// Only update if the sort value actually changed
-			if (sortValue !== values.sortBy) {
-				// Auto-submit when sort changes
-				const filters: ArticleFilters = {
-					searchTerm: values.searchTerm || undefined,
-					categoryName: values.category || undefined,
-					sortBy: sortValue,
-				};
-
-				setFilters(filters);
-			}
-		},
-		[values.searchTerm, values.category, values.sortBy, setValues, setFilters]
-	);	// Handle category selection without requiring a form submit
+	}); // Handle sort change without requiring a form submit
 	const handleCategoryChange = useCallback(
 		(categoryValue: string) => {
 			setValues({ category: categoryValue });
@@ -86,7 +69,13 @@ export function useArticleFilter() {
 				setFilters(filters);
 			}
 		},
-		[values.searchTerm, values.category, values.sortBy, setValues, setFilters]
+		[
+			values.searchTerm,
+			values.category,
+			values.sortBy,
+			setValues,
+			setFilters,
+		]
 	);
 
 	// Clear all filters
@@ -102,7 +91,6 @@ export function useArticleFilter() {
 		handleChange,
 		handleBlur,
 		handleSubmit,
-		handleSortChange,
 		handleCategoryChange,
 		clearFilters,
 	};

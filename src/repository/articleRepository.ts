@@ -1,28 +1,28 @@
 "use strict";
 import { apiClient } from "@/utils";
 import { categorizeError } from "@/utils/errorUtils";
-import { UserDetails } from "@/types";
+import { ArticleFormData, UserDetails } from "@/types";
 
 // Define the article types based on the actual API response
 export interface Comment {
-    id: number;
-    documentId: string;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    locale: string | null;
+	id: number;
+	documentId: string;
+	content: string;
+	createdAt: string;
+	updatedAt: string;
+	publishedAt: string;
+	locale: string | null;
 }
 
 export interface Category {
-    id: number;
-    documentId: string;
-    name: string;
-    description: string | null;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    locale: string | null;
+	id: number;
+	documentId: string;
+	name: string;
+	description: string | null;
+	createdAt: string;
+	updatedAt: string;
+	publishedAt: string;
+	locale: string | null;
 }
 
 export interface Article {
@@ -38,9 +38,9 @@ export interface Article {
 	comments?: Comment[];
 	category?: Category;
 	user?: UserDetails;
-};
+}
 
-export interface ArticleResponse {
+export interface ArticlesResponse {
 	data: Article[];
 	meta: {
 		pagination: {
@@ -50,6 +50,11 @@ export interface ArticleResponse {
 			total: number;
 		};
 	};
+}
+
+export interface ArticleResponse {
+	data: Article;
+	meta: Record<string, unknown>;
 }
 
 // Filter options interface
@@ -70,12 +75,12 @@ export const articleRepository = {
 	 * @param token Auth token
 	 * @param filters Optional filter criteria
 	 * @returns Paginated article data
-	 */	async getArticles(
+	 */ async getArticles(
 		page: number = 1,
 		pageSize: number = 10,
 		token: string,
 		filters?: ArticleFilters
-	): Promise<ArticleResponse> {
+	): Promise<ArticlesResponse> {
 		try {
 			const params: Record<string, string> = {
 				"pagination[page]": page.toString(),
@@ -108,8 +113,9 @@ export const articleRepository = {
 					case "title_desc":
 						params["sort[0]"] = "title:desc";
 						break;
-				}			}
-			return await apiClient.get<ArticleResponse>("/articles", {
+				}
+			}
+			return await apiClient.get<ArticlesResponse>("/articles", {
 				params,
 				token,
 			});
@@ -123,9 +129,9 @@ export const articleRepository = {
 						page: 1,
 						pageSize: 10,
 						pageCount: 0,
-						total: 0
-					}
-				}
+						total: 0,
+					},
+				},
 			};
 		}
 	},
@@ -139,15 +145,77 @@ export const articleRepository = {
 	async getArticleByTitle(
 		title: string,
 		token: string
-	): Promise<ArticleResponse> {
+	): Promise<ArticlesResponse> {
 		try {
 			const params: Record<string, string> = {
 				populate: "*",
 				"filters[title][$eqi]": title,
-			};			return await apiClient.get<ArticleResponse>("/articles", {
+			};
+			return await apiClient.get<ArticlesResponse>("/articles", {
 				params,
 				token,
 			});
+		} catch (error) {
+			throw categorizeError(error);
+		}
+	},
+	/**
+	 * Create a new article
+	 * @param data Article data to create
+	 * @param token Auth token
+	 * @returns Created article
+	 */ async createArticle(
+		data: { data: ArticleFormData },
+		token: string
+	): Promise<ArticleFormData> {
+		try {
+			const response = await apiClient.post<{ data: ArticleFormData }>(
+				"/articles",
+				data,
+				{ token }
+			);
+			return response.data;
+		} catch (error) {
+			throw categorizeError(error);
+		}
+	}
+	/**
+	 * Update an existing article
+	 * @param documentId Article Document ID to update
+	 * @param data Article data to update
+	 * @param token Auth token
+	 * @returns Updated article
+	 */,
+	async updateArticle(
+		documentId: string,
+		data: { data: Partial<ArticleFormData> },
+		token: string
+	): Promise<Article> {
+		try {
+			// The API returns { data: {...articleData} }
+			const response = await apiClient.put<ArticleResponse>(
+				`/articles/${documentId}`,
+				data,
+				{ token }
+			);
+			// We need to extract the article from the response.data
+			return response.data;
+		} catch (error) {
+			throw categorizeError(error);
+		}
+	},
+	/**
+	 * Delete an article by documentID
+	 * @param documentId Article documentID to delete
+	 * @param token Auth token
+	 * @returns Deleted article data
+	 */
+	deleteArticle(documentId: string, token: string): void {
+		try {
+			apiClient.delete<ArticleResponse>(
+				`/articles/${documentId}`,
+				{ token }
+			);
 		} catch (error) {
 			throw categorizeError(error);
 		}

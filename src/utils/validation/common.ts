@@ -3,7 +3,6 @@ import * as yup from "yup";
 // Common validation patterns that can be reused across schemas
 export const patterns = {
 	username: /^[a-zA-Z0-9_-]+$/,
-	password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
 };
 
 // Common validation messages to maintain consistency
@@ -41,8 +40,7 @@ export const fields = {
 	password: yup
 		.string()
 		.required(messages.required("Password"))
-		.min(8, messages.password.min)
-		.matches(patterns.password, messages.password.pattern),
+		.min(8, messages.password.min),
 
 	confirmPassword: (passwordField: string = "password") =>
 		yup

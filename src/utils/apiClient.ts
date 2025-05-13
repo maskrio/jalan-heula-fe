@@ -91,7 +91,9 @@ export const apiClient = {
 			}
 		}
 		try {
-			const response = await fetch(url.toString(), requestOptions); // Handle non-OK responses
+			const response = await fetch(url.toString(), requestOptions); // Handle non-OK responses			// Clone the response so we can use it multiple times if needed
+			const clonedResponse = response.clone();
+			
 			if (!response.ok) {
 				// Try to parse the error response as JSON first
 				let errorData;
@@ -119,7 +121,7 @@ export const apiClient = {
 						status: response.status,
 						statusText: response.statusText,
 						message: parseError,
-						response: { data: await response.text() },
+						response: { data: await clonedResponse.text() },
 					};
 				}
 
@@ -132,15 +134,27 @@ export const apiClient = {
 					response: { data: errorData },
 				};
 			}
+			
 			let responseData: T;
 			try {
 				responseData = await response.json();
 			} catch {
-				throw {
-					status: response.status,
-					statusText: response.statusText,
-					response: { data: await response.text() },
-				};
+				try {
+					// If JSON parsing fails, try to get the text from the cloned response
+					throw {
+						status: response.status,
+						statusText: response.statusText,
+						response: { data: await clonedResponse.text() },
+					};
+				} catch {
+					// If both methods fail, throw a generic error
+					throw {
+						status: response.status,
+						statusText: response.statusText,
+						message: "Failed to parse response",
+						response: { data: null },
+					};
+				}
 			}
 
 			return responseData as T;

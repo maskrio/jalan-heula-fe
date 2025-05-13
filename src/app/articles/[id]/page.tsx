@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
 import { Article } from "@/repository/articleRepository";
 import { articleService } from "@/service";
+import { ArticleActions, ArticleEditDialog } from "@/components/articles";
 
 // Define props according to Next.js App Router expectations
 interface ArticleDetailPageProps {
@@ -21,13 +22,14 @@ export default function ArticleDetailPage({
 	searchParams
 }: ArticleDetailPageProps) {
 	const router = useRouter();
-	const { isAuthenticated, loading: authLoading } = useAuth();
+	const { isAuthenticated, loading: authLoading, getCurrentUser } = useAuth();
 	const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
 	const [_, setResolvedSearchParams] = useState<{ [key: string]: string | string[] | undefined } | null>(null);
 	const [article, setArticle] = useState<Article | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const articleIdRef = useRef<string | null>(null);
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
 	useEffect(() => {
 		(async () => {
@@ -37,7 +39,6 @@ export default function ArticleDetailPage({
 			articleIdRef.current = paramsResolved ? paramsResolved.id : null;
 		})();
 	}, [params, searchParams]);
-
 	useEffect(() => {
 		if (!resolvedParams) return;
 		if (!authLoading && !isAuthenticated) {
@@ -52,12 +53,14 @@ export default function ArticleDetailPage({
 
 				if (response && response.data && response.data.length > 0) {
 					setArticle(response.data[0]);
-					console.log(article); 
+					setError(null);
 				} else {
+					setArticle(null);
 					setError("Article not found");
 				}
 			} catch (err) {
 				console.error("Error fetching article:", err);
+				setArticle(null);
 				setError("Failed to load article. Please try again later.");
 			} finally {
 				setLoading(false);
@@ -65,7 +68,7 @@ export default function ArticleDetailPage({
 		};
 
 		fetchArticle();
-	}, [isAuthenticated, authLoading, router, resolvedParams]);
+	}, [isAuthenticated, authLoading, router, resolvedParams, isEditDialogOpen]);
 
 	// Wait for params to resolve
 	if (!resolvedParams) {
@@ -167,10 +170,29 @@ export default function ArticleDetailPage({
 									{article.title}
 								</li>
 							</ol>
-						</nav>
-
-						{/* Article Header */}
-						<div className="mb-8">
+						</nav>						{/* Article Header */}
+						<div className="mb-8 relative">
+							{/* Article Actions (Edit/Delete) */}
+							{(() => {
+								const currentUser = getCurrentUser();
+								const isAuthor = currentUser && article.user && currentUser.id === article.user.id;
+								const canEdit = isAuthenticated && isAuthor;
+								
+								return canEdit && (
+									<div className="absolute top-0 right-0">										<ArticleActions 
+											article={article} 
+											onEdit={() => setIsEditDialogOpen(true)}
+											onDelete={() => {
+												// Navigate back to articles page after successful deletion
+												router.push("/articles");
+												// Show success notification
+												router.refresh();
+											}}
+										/>
+									</div>
+								);
+							})()}
+							
 							<h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
 								{article.title}
 							</h1>
@@ -282,11 +304,34 @@ export default function ArticleDetailPage({
 								← Back to Articles
 							</Link>
 
-							{/* In a real app, add next/prev article links here */}
-						</div>
+							{/* In a real app, add next/prev article links here */}						</div>
 					</div>
 				</div>
 			</main>
+
+			{/* Edit Dialog */}
+			{article && (
+				<ArticleEditDialog
+					isOpen={isEditDialogOpen}
+					onOpenChange={setIsEditDialogOpen}
+					article={article}
+					onSuccess={() => {
+						// Refresh the article data
+						const fetchArticle = async () => {
+							try {
+								const decodedTitle = decodeURIComponent(articleIdRef.current || "");
+								const response = await articleService.getArticleByTitle(decodedTitle);
+								if (response?.data && response.data.length > 0) {
+									setArticle(response.data[0]);
+								}
+							} catch (err) {
+								console.error("Failed to refresh article:", err);
+							}
+						};
+						fetchArticle();
+					}}
+				/>
+			)}
 		</>
 	);
 }

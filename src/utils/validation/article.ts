@@ -15,3 +15,11 @@ export const articleFilterSchema = yup.object().shape({
 		)
 		.default("latest"),
 });
+
+// Article creation form validation schema
+export const articleCreateSchema = yup.object().shape({
+	title: yup.string().required('Title is required').max(100, "Title must be less than 100 characters"),
+	description: yup.string().required('Description is required').max(1000, "Description must be less than 1000 characters"),
+	cover_image_url: yup.string().required('Cover image is required'),
+	category: yup.number().required('Category is required'),
+});

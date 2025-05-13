@@ -8,6 +8,7 @@ import {
 } from "@/repository/articleRepository";
 import { toast } from "@/hooks";
 import { AppError } from "@/utils/errorUtils";
+import { ArticleFormData } from "@/types";
 
 interface ArticleState {
 	articles: Article[];
@@ -16,7 +17,6 @@ interface ArticleState {
 	hasMore: boolean;
 	page: number;
 	filters: ArticleFilters;
-
 	// Actions
 	fetchArticles: (
 		pageSize?: number,
@@ -25,6 +25,8 @@ interface ArticleState {
 	loadMoreArticles: () => Promise<ArticleResponse | null>;
 	resetArticles: () => void;
 	setFilters: (filters: ArticleFilters) => void;
+	updateArticle: (documentId: string, data: ArticleFormData) => Promise<Article | null>;
+	deleteArticle: (documentId: string) => Promise<boolean>;
 }
 
 export const useArticleStore = create<ArticleState>()(
@@ -154,9 +156,7 @@ export const useArticleStore = create<ArticleState>()(
 
 					return null;
 				}
-			},
-
-			// Reset articles state
+			},			// Reset articles state
 			resetArticles: () => {
 				set({
 					articles: [],
@@ -166,6 +166,96 @@ export const useArticleStore = create<ArticleState>()(
 					page: 1,
 					filters: {},
 				});
+			},			// Update an article
+			updateArticle: async (documentId: string, data: ArticleFormData) => {
+				set({ loading: true, error: null });
+				
+				try {
+					const updatedArticle = await articleService.updateArticle(documentId, {
+						data: data,
+					});
+					
+					if (updatedArticle) {
+						// Update the article in the local store
+						const updatedArticles = get().articles.map(article => 
+							article.documentId === documentId ? { ...article, ...updatedArticle } : article
+						);
+						
+						set({
+							articles: updatedArticles,
+							loading: false,
+							error: null,
+						});
+						
+						toast({
+							title: "Success!",
+							description: "Article updated successfully",
+						});
+						
+						return updatedArticle;
+					}
+					
+					return null;
+				} catch (error) {
+					const appError = error as AppError;
+					const errorMessage = appError.message || "Failed to update article";
+					
+					set({
+						loading: false,
+						error: errorMessage,
+					});
+					
+					toast({
+						title: "Error",
+						description: errorMessage,
+						variant: "destructive",
+					});
+					
+					return null;
+				}
+			},
+					// Delete an article
+			deleteArticle: async (documentId: string) => {
+				set({ loading: true, error: null });
+				
+				try {
+					
+					// Remove the article from the local store
+					const filteredArticles = get().articles.filter(
+						article => article.documentId !== documentId
+					);
+					
+					set({
+						articles: filteredArticles,
+						loading: false,
+						error: null,
+					});
+					
+					toast({
+						title: "Success!",
+						description: "Article deleted successfully",
+					});
+					
+					return true;
+					
+				} catch (error) {
+					console.error("Error deleting article:", error);
+					const appError = error as AppError;
+					const errorMessage = appError.message || "Failed to delete article";
+					
+					set({
+						loading: false,
+						error: errorMessage,
+					});
+					
+					toast({
+						title: "Error",
+						description: errorMessage,
+						variant: "destructive",
+					});
+					
+					return false;
+				}
 			},
 		}),
 		{ name: "article-store" }

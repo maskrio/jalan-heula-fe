@@ -14,18 +14,16 @@ export default function ArticleFilterBar() {
 		handleChange,
 		handleBlur,
 		handleSubmit,
-		handleSortChange,
 		handleCategoryChange,
 		clearFilters,
 	} = useArticleFilter();
-
-	// Sample categories - in a real app, these would come from an API
+	// Categories matching those defined in the API
 	const categories = [
-		{ id: 1, name: "Beach" },
-		{ id: 2, name: "Mountain" },
-		{ id: 3, name: "City" },
-		{ id: 4, name: "Villages" },
-		{ id: 5, name: "Forest" },
+		{ id: 109, name: "Beach" },
+		{ id: 110, name: "Mountain" },
+		{ id: 111, name: "City" },
+		{ id: 112, name: "Village" },
+		{ id: 113, name: "Forest" },
 	];
 
 	return (
@@ -41,32 +39,6 @@ export default function ArticleFilterBar() {
 				</div>
 
 				<div className="flex gap-3">
-					{/* Sort dropdown */}
-					<div className="flex items-center space-x-2">
-						<label
-							htmlFor="sortBy"
-							className="text-sm text-muted-foreground whitespace-nowrap"
-						>
-							Sort by:
-						</label>
-						<select
-							id="sortBy"
-							name="sortBy"
-							value={values.sortBy}
-							onChange={(e) => {
-								// Cast the value to the correct type
-								const value = e.target.value as "latest" | "oldest" | "title_asc" | "title_desc";
-								handleSortChange(value);
-							}}
-							className="text-sm rounded-md border border-border bg-background py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-primary"
-						>
-							<option value="latest">Newest</option>
-							<option value="oldest">Oldest</option>
-							<option value="title_asc">Title A-Z</option>
-							<option value="title_desc">Title Z-A</option>
-						</select>
-					</div>
-
 					<button
 						type="button"
 						onClick={() => setExpanded(!expanded)}
@@ -125,13 +97,12 @@ export default function ArticleFilterBar() {
 									const value = e.target.value;
 									// Empty string represents "All Categories"
 									handleCategoryChange(value);
-								}}
-								className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+								}}								className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
 							>
 								<option value="">All Categories</option>
 								{categories.map((category) => (
 									<option
-										key={category.id}
+										key={`category-${category.id}`}
 										value={category.name}
 									>
 										{category.name}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Geologica, Montserrat } from "next/font/google";
+import { Geist, Geist_Mono, Geologica } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/Toaster";
@@ -17,12 +17,6 @@ const geistMono = Geist_Mono({
 const geologica = Geologica({
 	subsets: ["latin"],
 	variable: "--font-geologica",
-});
-
-const montserrat = Montserrat({
-	subsets: ["latin"],
-	variable: "--font-montserrat",
-	display: "swap",
 });
 
 export const metadata: Metadata = {

@@ -15,10 +15,19 @@ export function useAuth() {
 		checkAuth();
 	}, [checkAuth]);
 
+	/**
+	 * Get the current authenticated user
+	 * @returns The current user or null if not authenticated
+	 */
+	const getCurrentUser = () => {
+		return user;
+	};
+
 	return {
 		user,
 		loading,
 		isAuthenticated,
 		logout,
+		getCurrentUser,
 	};
 }

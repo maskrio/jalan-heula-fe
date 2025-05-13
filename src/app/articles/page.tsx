@@ -1,7 +1,11 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import { ArticleList, ArticleFilterBar } from "@/components/articles";
+import {
+	ArticleList,
+	ArticleFilterBar,
+	ArticleCreateButton,
+} from "@/components/articles";
 import { useAuth } from "@/hooks";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -70,6 +74,16 @@ export default function ArticlesPage({
 							</div>
 						) : isAuthenticated ? (
 							<>
+								{/* Create Article Button */}
+								<div className="mb-8 flex justify-end">
+									<ArticleCreateButton
+										onSuccess={() => {
+											// Refresh the articles list after successful creation
+											window.location.reload();
+										}}
+									/>
+								</div>
+
 								<ArticleFilterBar />
 								<ArticleList />
 							</>
