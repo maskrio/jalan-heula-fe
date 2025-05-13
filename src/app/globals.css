@@ -188,3 +188,7 @@
 .text-warning {
 	color: var(--warning);
 }
+
+.font-modern {
+  font-family: var(--font-geologica), "Geologica";
+}

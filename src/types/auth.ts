@@ -9,9 +9,7 @@ export type LoginCredentials = {
 	password: string;
 };
 
-export type User = {
-	jwt: string;
-	user: {
+export type UserDetails = {
 		id: number;
 		username: string;
 		email: string;
@@ -21,4 +19,8 @@ export type User = {
 		createdAt: string;
 		updatedAt: string;
 	}
+
+export type User = {
+	jwt: string;
+	user: UserDetails;
 };

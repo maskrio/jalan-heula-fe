@@ -1,6 +1,7 @@
 "use strict";
 import { apiClient } from "@/utils";
 import { categorizeError } from "@/utils/errorUtils";
+import { UserDetails } from "@/types";
 
 // Define the article types based on the actual API response
 export interface Comment {
@@ -26,7 +27,6 @@ export interface Category {
 
 export interface Article {
 	id: number;
-	// Direct properties for the actual API response structure
 	documentId?: string;
 	title?: string;
 	description?: string;
@@ -37,6 +37,7 @@ export interface Article {
 	locale?: string | null;
 	comments?: Comment[];
 	category?: Category;
+	user?: UserDetails;
 };
 
 export interface ArticleResponse {

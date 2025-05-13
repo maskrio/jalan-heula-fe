@@ -52,6 +52,7 @@ export default function ArticleDetailPage({
 
 				if (response && response.data && response.data.length > 0) {
 					setArticle(response.data[0]);
+					console.log(article); 
 				} else {
 					setError("Article not found");
 				}
@@ -228,14 +229,6 @@ export default function ArticleDetailPage({
 						<div className="prose prose-lg dark:prose-invert max-w-none">
 							<p className="text-lg text-muted-foreground mb-6">
 								{article.description}
-							</p>
-
-							{/* Placeholder content since we don't have full content from API */}
-							<p>
-								This is a placeholder for the article content.
-								In a real implementation, this would display the
-								full content of the article fetched from the
-								API.
 							</p>
 
 							{/* Comments Section */}

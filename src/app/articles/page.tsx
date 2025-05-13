@@ -45,7 +45,7 @@ export default function ArticlesPage({
 	return (
 		<div>
 			<Navbar />
-			<main className="min-h-screen">
+			<main className="min-h-screen font-modern">
 				{/* Articles Hero Section */}
 				<section className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/20">
 					<div className="container mx-auto px-4 sm:px-6 lg:px-8">

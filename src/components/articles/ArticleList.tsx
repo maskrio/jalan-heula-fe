@@ -7,11 +7,10 @@ import ArticleSkeletonCard from "./ArticleSkeletonCard";
 export default function ArticleList() {
 	const { articles, loading, error, hasMore, lastArticleElementRef } =
 		useArticles(6); // Load 6 articles per page
-
-	// Show loading skeletons when first loading
+			// Show loading skeletons when first loading
 	if (loading && articles.length === 0) {
 		return (
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<div>
 				{Array.from({ length: 6 }).map((_, index) => (
 					<ArticleSkeletonCard key={index} />
 				))}
@@ -44,28 +43,19 @@ export default function ArticleList() {
 			</div>
 		);
 	}
-
-	return (
-		<div className="space-y-8">
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{articles.map((article, index) => {
-					// Add ref to the last article element for infinite scrolling
-					if (articles.length === index + 1) {
-						return (
-							<ArticleCard
-								key={article.id}
-								article={article}
-								ref={lastArticleElementRef}
-							/>
-						);
-					} else {
-						return (
-							<ArticleCard key={article.id} article={article} />
-						);
-					}
-				})}
-			</div>
-
+		return (
+		<div>
+			{articles.map((article, index) => {
+				const isLast = articles.length === index + 1;
+				return (
+					<ArticleCard
+						key={article.id}
+						article={article}
+						ref={isLast ? lastArticleElementRef : undefined}
+					/>
+				);
+			})}
+			
 			{/* Loading more indicator */}
 			{loading && articles.length > 0 && (
 				<div className="flex justify-center p-4">

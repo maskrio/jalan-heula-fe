@@ -3,14 +3,24 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks";
 
 export default function Navbar() {
 	const { theme, setTheme } = useTheme();
 	const { user, isAuthenticated, logout } = useAuth();
+	const pathname = usePathname();
 	const [mounted, setMounted] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
+	// Check if the current path matches the link
+	const isActive = (path: string) => {
+		if (path === '/') {
+			return pathname === path;
+		}
+		return pathname?.startsWith(path);
+	};
 
 	useEffect(() => {
 		setMounted(true);
@@ -36,34 +46,52 @@ export default function Navbar() {
 							>
 								Jalan-Heula
 							</Link>
-						</div>
-						<div className="hidden sm:ml-6 sm:flex sm:space-x-8">							<Link
+						</div>						<div className="hidden sm:ml-6 sm:flex sm:space-x-8">							<Link
 								href="/"
-								className="inline-flex items-center px-1 pt-1 border-b-2 border-primary text-sm font-medium"
+								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+									isActive('/')
+										? 'border-primary text-primary'
+										: 'border-transparent hover:border-accent hover:text-accent'
+								}`}
 							>
 								Home
 							</Link>
 							<Link
 								href="/articles"
-								className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-accent hover:text-accent text-sm font-medium"
+								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+									isActive('/articles')
+										? 'border-primary text-primary'
+										: 'border-transparent hover:border-accent hover:text-accent'
+								}`}
 							>
 								Articles
 							</Link>
 							<Link
 								href="/about"
-								className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-accent hover:text-accent text-sm font-medium"
+								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+									isActive('/about')
+										? 'border-primary text-primary'
+										: 'border-transparent hover:border-accent hover:text-accent'
+								}`}
 							>
 								About
 							</Link>
 							<Link
 								href="/services"
-								className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-accent hover:text-accent text-sm font-medium"
-							>
+								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+									isActive('/services')
+										? 'border-primary text-primary'
+										: 'border-transparent hover:border-accent hover:text-accent'
+								}`}							>
 								Services
 							</Link>
 							<Link
 								href="/contact"
-								className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-accent hover:text-accent text-sm font-medium"
+								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+									isActive('/contact')
+										? 'border-primary text-primary'
+										: 'border-transparent hover:border-accent hover:text-accent'
+								}`}
 							>
 								Contact
 							</Link>
@@ -216,35 +244,53 @@ export default function Navbar() {
 				</div>
 			</div>
 
-			{/* Mobile menu, show/hide based on menu state */}
-			<div className={isMenuOpen ? "block sm:hidden" : "hidden"}>				<div className="pt-2 pb-3 space-y-1">
+			{/* Mobile menu, show/hide based on menu state */}			<div className={isMenuOpen ? "block sm:hidden" : "hidden"}>				<div className="pt-2 pb-3 space-y-1">
 					<Link
 						href="/"
-						className="bg-primary/10 border-l-4 border-primary text-primary block pl-3 pr-4 py-2 text-base font-medium"
+						className={`block pl-3 pr-4 py-2 text-base font-medium border-l-4 ${
+							isActive('/')
+								? 'bg-primary/10 border-primary text-primary'
+								: 'border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent'
+						}`}
 					>
 						Home
 					</Link>
 					<Link
 						href="/articles"
-						className="hover:bg-accent/10 border-l-4 border-transparent hover:border-accent block pl-3 pr-4 py-2 text-base font-medium"
+						className={`block pl-3 pr-4 py-2 text-base font-medium border-l-4 ${
+							isActive('/articles')
+								? 'bg-primary/10 border-primary text-primary'
+								: 'border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent'
+						}`}
 					>
 						Articles
 					</Link>
 					<Link
 						href="/about"
-						className="border-l-4 border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent block pl-3 pr-4 py-2 text-base font-medium"
+						className={`block pl-3 pr-4 py-2 text-base font-medium border-l-4 ${
+							isActive('/about')
+								? 'bg-primary/10 border-primary text-primary'
+								: 'border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent'
+						}`}
 					>
 						About
-					</Link>
-					<Link
+					</Link>					<Link
 						href="/services"
-						className="border-l-4 border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent block pl-3 pr-4 py-2 text-base font-medium"
+						className={`block pl-3 pr-4 py-2 text-base font-medium border-l-4 ${
+							isActive('/services')
+								? 'bg-primary/10 border-primary text-primary'
+								: 'border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent'
+						}`}
 					>
 						Services
 					</Link>
 					<Link
 						href="/contact"
-						className="border-l-4 border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent block pl-3 pr-4 py-2 text-base font-medium"
+						className={`block pl-3 pr-4 py-2 text-base font-medium border-l-4 ${
+							isActive('/contact')
+								? 'bg-primary/10 border-primary text-primary'
+								: 'border-transparent hover:bg-accent/10 hover:border-accent hover:text-accent'
+						}`}
 					>
 						Contact
 					</Link>
