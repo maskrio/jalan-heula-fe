@@ -8,3 +8,7 @@ export { default as ArticleEditDialog } from "./ArticleEditDialog";
 export { default as ArticleActions } from "./ArticleActions";
 export { default as CreateCategory } from "./CreateCategory";
 export { default as CategoryManagement } from "./CategoryManagement";
+export { CommentForm } from "./CommentForm";
+export { CommentItem } from "./CommentItem";
+export { CommentsSection } from "./CommentsSection";
+export { CommentCard } from "./CommentCard";

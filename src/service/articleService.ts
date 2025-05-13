@@ -55,7 +55,6 @@ export const articleService = {
 			};
 		}
 	},
-
 	/**
 	 * Fetch article by title
 	 * @param title Article title
@@ -74,7 +73,8 @@ export const articleService = {
 			);
 			return response;
 		} catch (error) {
-			throw error;
+			console.error("Failed to get article by title:", error);
+			return null;
 		}
 	},
 

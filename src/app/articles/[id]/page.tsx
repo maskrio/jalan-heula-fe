@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
 import { Article } from "@/repository/articleRepository";
 import { articleService } from "@/service";
-import { ArticleActions, ArticleEditDialog } from "@/components/articles";
+import { ArticleActions, ArticleEditDialog, CommentsSection } from "@/components/articles";
+import { useCommentStore } from "@/store";
 
 // Define props according to Next.js App Router expectations
 interface ArticleDetailPageProps {
@@ -20,25 +21,28 @@ interface ArticleDetailPageProps {
 export default function ArticleDetailPage({
 	params,
 	searchParams
-}: ArticleDetailPageProps) {
-	const router = useRouter();
+}: ArticleDetailPageProps) {	const router = useRouter();
 	const { isAuthenticated, loading: authLoading, getCurrentUser } = useAuth();
+	const { fetchComments, clearComments, setArticleTitle } = useCommentStore();
 	const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
 	const [_, setResolvedSearchParams] = useState<{ [key: string]: string | string[] | undefined } | null>(null);
 	const [article, setArticle] = useState<Article | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const articleIdRef = useRef<string | null>(null);
-	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-
-	useEffect(() => {
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);	useEffect(() => {
 		(async () => {
 			const paramsResolved = params ? await params : null;
 			setResolvedParams(paramsResolved);
 			setResolvedSearchParams(searchParams ? await searchParams : null);
 			articleIdRef.current = paramsResolved ? paramsResolved.id : null;
 		})();
-	}, [params, searchParams]);
+
+		// Cleanup function to clear comments from the store when unmounting
+		return () => {
+			clearComments();
+		};
+	}, [params, searchParams, clearComments]);
 	useEffect(() => {
 		if (!resolvedParams) return;
 		if (!authLoading && !isAuthenticated) {
@@ -49,11 +53,15 @@ export default function ArticleDetailPage({
 			try {
 				setLoading(true);
 				const decodedTitle = decodeURIComponent(articleIdRef.current || "");
-				const response = await articleService.getArticleByTitle(decodedTitle);
-
-				if (response && response.data && response.data.length > 0) {
+				const response = await articleService.getArticleByTitle(decodedTitle);				if (response && response.data && response.data.length > 0) {
 					setArticle(response.data[0]);
 					setError(null);
+					
+					// Store article title and prefetch comments if article has an ID
+					if (response.data[0].id && response.data[0].title) {
+						setArticleTitle(response.data[0].id, decodedTitle);
+						fetchComments(response.data[0].id, decodedTitle);
+					}
 				} else {
 					setArticle(null);
 					setError("Article not found");
@@ -66,9 +74,8 @@ export default function ArticleDetailPage({
 				setLoading(false);
 			}
 		};
-
 		fetchArticle();
-	}, [isAuthenticated, authLoading, router, resolvedParams, isEditDialogOpen]);
+	}, [isAuthenticated, authLoading, router, resolvedParams, isEditDialogOpen, fetchComments, setArticleTitle]);
 
 	// Wait for params to resolve
 	if (!resolvedParams) {
@@ -246,65 +253,28 @@ export default function ArticleDetailPage({
 									</svg>
 								</div>
 							)}
-						</div>
-						{/* Article Content */}
+						</div>						{/* Article Content */}
 						<div className="prose prose-lg dark:prose-invert max-w-none">
 							<p className="text-lg text-muted-foreground mb-6">
 								{article.description}
 							</p>
 
 							{/* Comments Section */}
-							<div className="mt-12 pt-8 border-t border-border">
-								<h2 className="text-2xl font-semibold mb-6">
-									Comments
-								</h2>
+							<CommentsSection
+								articleId={article.id}
+								initialComments={article.comments || []}
+							/>							{/* Navigation */}
+							<div className="mt-12 pt-8 border-t border-border flex justify-between">
+								<Link
+									href="/articles"
+									className="px-4 py-2 bg-primary/10 text-primary rounded-md hover:bg-primary/20"
+								>
+									← Back to Articles
+								</Link>
 
-								{article.comments &&
-								article.comments.length > 0 ? (
-									<div className="space-y-6">
-										{article.comments.map((comment) => (
-											<div
-												key={comment.id}
-												className="bg-muted/40 p-4 rounded-lg"
-											>
-												<p className="mb-2">
-													{comment.content}
-												</p>
-												<div className="text-xs text-muted-foreground">
-													{new Date(
-														comment.createdAt
-													).toLocaleDateString(
-														"en-US",
-														{
-															year: "numeric",
-															month: "short",
-															day: "numeric",
-															hour: "2-digit",
-															minute: "2-digit",
-														}
-													)}
-												</div>
-											</div>
-										))}
-									</div>
-								) : (
-									<p className="text-muted-foreground">
-										No comments yet.
-									</p>
-								)}
+								{/* In a real app, add next/prev article links here */}
 							</div>
 						</div>
-
-						{/* Navigation */}
-						<div className="mt-12 pt-8 border-t border-border flex justify-between">
-							<Link
-								href="/articles"
-								className="px-4 py-2 bg-primary/10 text-primary rounded-md hover:bg-primary/20"
-							>
-								← Back to Articles
-							</Link>
-
-							{/* In a real app, add next/prev article links here */}						</div>
 					</div>
 				</div>
 			</main>
@@ -314,8 +284,7 @@ export default function ArticleDetailPage({
 				<ArticleEditDialog
 					isOpen={isEditDialogOpen}
 					onOpenChange={setIsEditDialogOpen}
-					article={article}
-					onSuccess={() => {
+					article={article}					onSuccess={() => {
 						// Refresh the article data
 						const fetchArticle = async () => {
 							try {
@@ -323,6 +292,13 @@ export default function ArticleDetailPage({
 								const response = await articleService.getArticleByTitle(decodedTitle);
 								if (response?.data && response.data.length > 0) {
 									setArticle(response.data[0]);
+									
+									// Update the article title in the comment store if it changed
+									if (response.data[0].id && response.data[0].title) {
+										setArticleTitle(response.data[0].id, decodedTitle);
+										// Refresh comments with new title
+										fetchComments(response.data[0].id, decodedTitle);
+									}
 								}
 							} catch (err) {
 								console.error("Failed to refresh article:", err);
