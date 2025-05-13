@@ -389,7 +389,7 @@ export default function ArticleEditDialog({
 							{!isLoading && (
 								<div className="mt-2">
 									<p className="text-xs text-muted-foreground mb-1">
-										Can't find your category? Create a new
+										Can&apos;t find your category? Create a new
 										one:
 									</p>{" "}
 									<CreateCategory

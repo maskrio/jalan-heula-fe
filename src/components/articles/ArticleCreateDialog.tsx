@@ -376,7 +376,7 @@ export default function ArticleCreateDialog({
 							{!isLoading && (
 								<div className="mt-2">
 									<p className="text-xs text-muted-foreground mb-1">
-										Can't find your category? Create a new one:
+										Can&apos;t find your category? Create a new one:
 									</p>
 									<CreateCategory										onCategoryCreated={(newCategory) => {
 											// Select the new category

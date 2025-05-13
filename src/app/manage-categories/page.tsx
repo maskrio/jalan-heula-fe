@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function ManageCategoriesPage() {
-	const { isAuthenticated, loading, user } = useAuth();
+	const { isAuthenticated, loading } = useAuth();
 	const router = useRouter();
 
 	// Check if user is authenticated and has necessary permissions
