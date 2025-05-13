@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useAuth } from "@/hooks";
 import { articleService, uploadService } from "@/service";
@@ -14,14 +14,8 @@ import {
 import { Upload, X } from "lucide-react";
 import { ArticleFormData } from "@/types";
 import { articleCreateSchema } from "@/utils/validation/article";
-
-const categories = [
-	{ id: 109, name: "Beach" },
-	{ id: 110, name: "Mountain" },
-	{ id: 111, name: "City" },
-	{ id: 112, name: "Village" },
-	{ id: 113, name: "Forest" },
-];
+import CreateCategory from "./CreateCategory";
+import { useCategoryStore } from "@/store";
 
 interface ArticleCreateDialogProps {
 	isOpen: boolean;
@@ -37,25 +31,45 @@ export default function ArticleCreateDialog({
 	const { toast } = useToast();
 	const { isAuthenticated } = useAuth();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const { categories, isLoading, fetchCategories } = useCategoryStore();
 	const [formData, setFormData] = useState<ArticleFormData>({
 		title: "",
 		description: "",
 		cover_image_url: "",
-		category: Number(categories[0].id), // Ensure category is stored as a number
+		category: 109,
 	});
 	const [errors, setErrors] = useState<
 		Partial<Record<keyof ArticleFormData, string>>
 	>({});
 	const [uploadingImage, setUploadingImage] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
-		const validateForm = async () => {
+
+	// Fetch categories when dialog opens
+	useEffect(() => {
+		if (isOpen) {
+			fetchCategories();
+		}
+	}, [isOpen, fetchCategories]);
+
+	// Update form when categories are loaded
+	useEffect(() => {
+		if (categories.length > 0) {
+			setFormData((prevData) => ({
+				...prevData,
+				category: Number(categories[0].id),
+			}));
+		}	}, [categories]);
+
+	const validateForm = async () => {
 		try {
 			await articleCreateSchema.validate(formData, { abortEarly: false });
 			setErrors({});
 			return true;
 		} catch (err) {
 			if (err instanceof Error && "inner" in err) {
-				type ValidationError = Error & { inner: { path?: string; message: string }[] };
+				type ValidationError = Error & {
+					inner: { path?: string; message: string }[];
+				};
 				const validationError = err as ValidationError;
 				const newErrors: Partial<Record<keyof ArticleFormData, string>> = {};
 				validationError.inner.forEach((e) => {
@@ -80,7 +94,7 @@ export default function ArticleCreateDialog({
 			[name]: name === "category" ? parseInt(value) : value,
 		});
 	};
-	
+
 	const handleImageUpload = async (file: File) => {
 		if (!file) return;
 
@@ -122,17 +136,17 @@ export default function ArticleCreateDialog({
 	const triggerFileInput = () => {
 		fileInputRef.current?.click();
 	};
-	
+
 	const resetForm = () => {
 		setFormData({
 			title: "",
 			description: "",
 			cover_image_url: "",
-			category: Number(categories[0].id), // Ensure category is stored as a number
+			category: categories.length > 0 ? Number(categories[0].id) : 0,
 		});
 		setErrors({});
 	};
-	
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const isValid = await validateForm();
@@ -277,7 +291,8 @@ export default function ArticleCreateDialog({
 											<p className="text-sm text-muted-foreground">
 												Uploading image...
 											</p>
-										</div>									) : formData.cover_image_url ? (
+										</div>
+									) : formData.cover_image_url ? (
 										<div className="relative">
 											<Image
 												src={formData.cover_image_url}
@@ -328,28 +343,51 @@ export default function ArticleCreateDialog({
 							>
 								Category
 							</label>
-							<select
-								id="category"
-								name="category"
-								value={formData.category}
-								onChange={(e) => {
-									// Ensure the category is converted to a number
-									setFormData({
-										...formData,
-										category: Number(e.target.value),
-									});
-								}}
-								className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-							>
-								{categories.map((category) => (
-									<option
-										key={category.id}
-										value={category.id}
-									>
-										{category.name}
-									</option>
-								))}
-							</select>
+							{isLoading ? (
+								<div className="flex items-center space-x-2">
+									<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+									<span className="text-sm text-muted-foreground">
+										Loading categories...
+									</span>
+								</div>
+							) : (
+								<select
+									id="category"
+									name="category"
+									value={formData.category}
+									onChange={(e) => {
+										// Ensure the category is converted to a number
+										setFormData({
+											...formData,
+											category: Number(e.target.value),
+										});
+									}}
+									className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+								>
+									{categories.map((category) => (
+										<option key={category.id} value={category.id}>
+											{category.name}
+										</option>
+									))}
+								</select>
+							)}
+
+							{/* Add option to create a new category */}
+							{!isLoading && (
+								<div className="mt-2">
+									<p className="text-xs text-muted-foreground mb-1">
+										Can't find your category? Create a new one:
+									</p>
+									<CreateCategory										onCategoryCreated={(newCategory) => {
+											// Select the new category
+											setFormData((prev) => ({
+												...prev,
+												category: Number(newCategory.id),
+											}));
+										}}
+									/>
+								</div>
+							)}
 						</div>
 						{/* Submit button */}
 						<div>
@@ -358,9 +396,7 @@ export default function ArticleCreateDialog({
 								disabled={isSubmitting}
 								className="w-full py-2 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none transition-colors"
 							>
-								{isSubmitting
-									? "Creating..."
-									: "Create Article"}
+								{isSubmitting ? "Creating..." : "Create Article"}
 							</button>
 						</div>
 					</div>

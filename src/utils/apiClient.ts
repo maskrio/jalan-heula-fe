@@ -93,8 +93,7 @@ export const apiClient = {
 		try {
 			const response = await fetch(url.toString(), requestOptions); // Handle non-OK responses			// Clone the response so we can use it multiple times if needed
 			const clonedResponse = response.clone();
-			
-			if (!response.ok) {
+					if (!response.ok) {
 				// Try to parse the error response as JSON first
 				let errorData;
 				let errorMessage = null;
@@ -133,6 +132,11 @@ export const apiClient = {
 					error: errorData.error || errorData,
 					response: { data: errorData },
 				};
+			}
+			
+			// Handle 204 No Content responses - return empty object for these responses
+			if (response.status === 204) {
+				return {} as T;
 			}
 			
 			let responseData: T;

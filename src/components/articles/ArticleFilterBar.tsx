@@ -1,12 +1,13 @@
 "use client";
 
 import { useArticleFilter } from "@/hooks";
-import { useArticleStore } from "@/store";
-import { useState } from "react";
+import { useArticleStore, useCategoryStore } from "@/store";
+import { useEffect, useState } from "react";
 
 export default function ArticleFilterBar() {
 	const [expanded, setExpanded] = useState(false);
 	const { articles } = useArticleStore();
+	const { categories, fetchCategories } = useCategoryStore();
 	const {
 		values,
 		errors,
@@ -17,14 +18,11 @@ export default function ArticleFilterBar() {
 		handleCategoryChange,
 		clearFilters,
 	} = useArticleFilter();
-	// Categories matching those defined in the API
-	const categories = [
-		{ id: 109, name: "Beach" },
-		{ id: 110, name: "Mountain" },
-		{ id: 111, name: "City" },
-		{ id: 112, name: "Village" },
-		{ id: 113, name: "Forest" },
-	];
+	
+	// Fetch categories when component mounts
+	useEffect(() => {
+		fetchCategories();
+	}, [fetchCategories]);
 
 	return (
 		<div className="bg-card border border-border rounded-lg p-4 mb-8">

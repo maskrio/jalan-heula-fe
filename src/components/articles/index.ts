@@ -6,3 +6,5 @@ export { default as ArticleCreateButton } from "./ArticleCreateButton";
 export { default as ArticleCreateDialog } from "./ArticleCreateDialog";
 export { default as ArticleEditDialog } from "./ArticleEditDialog";
 export { default as ArticleActions } from "./ArticleActions";
+export { default as CreateCategory } from "./CreateCategory";
+export { default as CategoryManagement } from "./CategoryManagement";

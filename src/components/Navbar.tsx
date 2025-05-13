@@ -77,24 +77,15 @@ export default function Navbar() {
 								About
 							</Link>
 							<Link
-								href="/services"
+								href="/manage-categories"
 								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-									isActive('/services')
+									isActive('/manage-categories')
 										? 'border-primary text-primary'
 										: 'border-transparent hover:border-accent hover:text-accent'
 								}`}							>
-								Services
+								Manage Categories
 							</Link>
-							<Link
-								href="/contact"
-								className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-									isActive('/contact')
-										? 'border-primary text-primary'
-										: 'border-transparent hover:border-accent hover:text-accent'
-								}`}
-							>
-								Contact
-							</Link>
+							
 						</div>
 					</div>
 					<div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">

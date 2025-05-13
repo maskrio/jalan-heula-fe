@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAuth } from "@/hooks";
 import { uploadService } from "@/service";
 import { useToast } from "@/hooks";
-import { useArticleStore } from "@/store";
+import { useArticleStore, useCategoryStore } from "@/store";
 import {
 	Dialog,
 	DialogContent,
@@ -16,6 +16,7 @@ import { Upload, X } from "lucide-react";
 import { articleCreateSchema } from "@/utils/validation/article";
 import { ArticleFormData } from "@/types";
 import { Article } from "@/repository/articleRepository";
+import CreateCategory from "./CreateCategory";
 
 interface ArticleEditDialogProps {
 	isOpen: boolean;
@@ -23,14 +24,6 @@ interface ArticleEditDialogProps {
 	article: Article;
 	onSuccess?: () => void;
 }
-
-const categories = [
-	{ id: 109, name: "Beach" },
-	{ id: 110, name: "Mountain" },
-	{ id: 111, name: "City" },
-	{ id: 112, name: "Village" },
-	{ id: 113, name: "Forest" },
-];
 
 export default function ArticleEditDialog({
 	isOpen,
@@ -42,17 +35,24 @@ export default function ArticleEditDialog({
 	const { isAuthenticated } = useAuth();
 	const { updateArticle } = useArticleStore();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const { categories, isLoading, fetchCategories } = useCategoryStore();
 	const [formData, setFormData] = useState<ArticleFormData>({
 		title: article.title || "",
 		description: article.description || "",
 		cover_image_url: article.cover_image_url || "",
-		category: article.category?.id || Number(categories[0].id),
+		category: article.category?.id || 109,
 	});
 	const [errors, setErrors] = useState<
 		Partial<Record<keyof ArticleFormData, string>>
 	>({});
 	const [uploadingImage, setUploadingImage] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	// Fetch categories when dialog opens
+	useEffect(() => {
+		if (isOpen) {
+			fetchCategories();
+		}
+	}, [isOpen, fetchCategories]);
 
 	// Update form data when article changes
 	useEffect(() => {
@@ -61,10 +61,13 @@ export default function ArticleEditDialog({
 				title: article.title || "",
 				description: article.description || "",
 				cover_image_url: article.cover_image_url || "",
-				category: article.category?.id || Number(categories[0].id),
+				category:
+					article.category?.id ||
+					(categories.length > 0 ? Number(categories[0].id) : 0),
 			});
 		}
-	}, [article]);
+	}, [article, categories]);
+
 	const validateForm = async () => {
 		try {
 			await articleCreateSchema.validate(formData, { abortEarly: false });
@@ -72,7 +75,9 @@ export default function ArticleEditDialog({
 			return true;
 		} catch (err) {
 			if (err instanceof Error && "inner" in err) {
-				type ValidationError = Error & { inner: { path?: string; message: string }[] };
+				type ValidationError = Error & {
+					inner: { path?: string; message: string }[];
+				};
 				const validationError = err as ValidationError;
 				const newErrors: Partial<
 					Record<keyof ArticleFormData, string>
@@ -171,7 +176,7 @@ export default function ArticleEditDialog({
 				cover_image_url: formData.cover_image_url,
 				category: formData.category,
 			});
-			
+
 			if (result) {
 				toast({
 					title: "Success!",
@@ -183,7 +188,9 @@ export default function ArticleEditDialog({
 
 				if (onSuccess) onSuccess();
 			} else {
-				throw new Error("Failed to update article: No response from server");
+				throw new Error(
+					"Failed to update article: No response from server"
+				);
 			}
 		} catch (error) {
 			console.error("Failed to update article:", error);
@@ -293,7 +300,8 @@ export default function ArticleEditDialog({
 											<p className="text-sm text-muted-foreground">
 												Uploading image...
 											</p>
-										</div>									) : formData.cover_image_url ? (
+										</div>
+									) : formData.cover_image_url ? (
 										<div className="relative">
 											<Image
 												src={formData.cover_image_url}
@@ -335,7 +343,7 @@ export default function ArticleEditDialog({
 									</p>
 								)}
 							</div>
-						</div>
+						</div>{" "}
 						{/* Category field */}
 						<div>
 							<label
@@ -344,34 +352,65 @@ export default function ArticleEditDialog({
 							>
 								Category
 							</label>
-							<select
-								id="category"
-								name="category"
-								value={formData.category}
-								onChange={(e) => {
-									// Ensure the category is converted to a number
-									setFormData({
-										...formData,
-										category: Number(e.target.value),
-									});
-								}}
-								className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-							>
-								{categories.map((category) => (
-									<option
-										key={category.id}
-										value={category.id}
-									>
-										{category.name}
-									</option>
-								))}
-							</select>
+							{isLoading ? (
+								<div className="flex items-center space-x-2">
+									<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+									<span className="text-sm text-muted-foreground">
+										Loading categories...
+									</span>
+								</div>
+							) : (
+								<select
+									id="category"
+									name="category"
+									value={formData.category}
+									onChange={(e) => {
+										// Ensure the category is converted to a number
+										setFormData({
+											...formData,
+											category: Number(e.target.value),
+										});
+									}}
+									className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+								>
+									{categories.map((category) => (
+										<option
+											key={category.id}
+											value={category.id}
+										>
+											{" "}
+											{category.name}
+										</option>
+									))}{" "}
+								</select>
+							)}
+
+							{/* Add option to create a new category */}
+							{!isLoading && (
+								<div className="mt-2">
+									<p className="text-xs text-muted-foreground mb-1">
+										Can't find your category? Create a new
+										one:
+									</p>{" "}
+									<CreateCategory
+										onCategoryCreated={(newCategory) => {
+											// Select the new category
+											setFormData((prev) => ({
+												...prev,
+												category: Number(
+													newCategory.id
+												),
+											}));
+										}}
+									/>
+								</div>
+							)}
 						</div>
 						{/* Submit button */}
 						<div>
 							<button
 								type="submit"
-								disabled={isSubmitting}
+								disabled={isSubmitting || isLoading}
 								className="w-full py-2 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none transition-colors"
 							>
 								{isSubmitting

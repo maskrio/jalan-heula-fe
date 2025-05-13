@@ -73,9 +73,14 @@ export default function ArticlesPage({
 								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
 							</div>
 						) : isAuthenticated ? (
-							<>
-								{/* Create Article Button */}
-								<div className="mb-8 flex justify-end">
+							<>								{/* Create Article Button */}
+								<div className="mb-8 flex justify-end space-x-4">
+									<Link 
+										href="/manage-categories"
+										className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-medium hover:bg-secondary/90 transition-colors flex items-center"
+									>
+										Manage Categories
+									</Link>
 									<ArticleCreateButton
 										onSuccess={() => {
 											// Refresh the articles list after successful creation
@@ -83,7 +88,6 @@ export default function ArticlesPage({
 										}}
 									/>
 								</div>
-
 								<ArticleFilterBar />
 								<ArticleList />
 							</>
