@@ -15,9 +15,23 @@ The project follows this Routing naming structure:
 - `src/utils` - Reusable util functions
 - `public` - Static assets like images and fonts
 
-Each route in the app directory uses the following structure:
+Each route in the `src/app` directory uses the following structure:
 - `page.tsx` - The main UI component for the route
 - `layout.tsx` - Layout components that wrap pages
+
+## Tech Stack
+
+This project uses the following technologies:
+
+- **Next.js 15** - React framework with server-side rendering and routing
+- **TypeScript** - For type safety and better developer experience
+- **Shadcn UI** - A collection of reusable UI components built with Radix UI and Tailwind CSS
+- **Tailwind CSS** - Utility-first CSS framework for styling
+- **Zustand** - Lightweight state management solution
+- **Yup** - Schema validation library for form validation
+- **Axios** - Promise-based HTTP client for API requests
+- **ESLint** - For code linting
+- **Prettier** - For code formatting
 
 ## Getting Started
 
