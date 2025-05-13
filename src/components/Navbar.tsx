@@ -35,8 +35,8 @@ export default function Navbar() {
 	};
 
 	return (
-		<nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border shadow-sm">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border shadow-sm font-modern">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
 				<div className="flex justify-between items-center h-16">
 					{/* Logo - visible on all screen sizes */}
 					<div className="flex-shrink-0 flex items-center">
@@ -52,7 +52,7 @@ export default function Navbar() {
 					<div className="hidden sm:flex sm:items-center sm:ml-6 sm:space-x-8">
 						<Link
 							href="/"
-							className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+							className={`inline-flex items-center px-1 pt-1 border-b-2 text-m font-medium ${
 								isActive("/")
 									? "border-primary text-primary"
 									: "border-transparent hover:border-accent hover:text-accent"
@@ -62,7 +62,7 @@ export default function Navbar() {
 						</Link>
 						<Link
 							href="/articles"
-							className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+							className={`inline-flex items-center px-1 pt-1 border-b-2 text-m font-medium ${
 								isActive("/articles")
 									? "border-primary text-primary"
 									: "border-transparent hover:border-accent hover:text-accent"
@@ -72,7 +72,7 @@ export default function Navbar() {
 						</Link>
 						<Link
 							href="/manage-categories"
-							className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+							className={`inline-flex items-center px-1 pt-1 border-b-2 text-m font-medium ${
 								isActive("/manage-categories")
 									? "border-primary text-primary"
 									: "border-transparent hover:border-accent hover:text-accent"

@@ -106,7 +106,7 @@ export default function Home() {
 	return (
 		<>
 			<Navbar />
-			<main className="min-h-screen">
+			<main className="min-h-screen font-modern">
 				{/* Hero Section */}
 				<section className="relative py-20 md:py-32 overflow-hidden">
 					<div className="absolute inset-0 -z-10 bg-gradient-to-b from-background to-muted/50"></div>
@@ -156,7 +156,7 @@ export default function Home() {
 									key={index}
 									className="bg-background p-6 rounded-xl shadow-sm border border-border hover:shadow-md transition-shadow"
 								>
-									<div className="p-3 bg-primary/10 rounded-full w-fit mb-4 text-secondary">
+									<div className="p-3 bg-primary/10 rounded-full w-fit mb-4 text-primary">
 										{feature.icon}
 									</div>
 									<h3 className="text-xl font-semibold mb-2">
@@ -211,7 +211,7 @@ export default function Home() {
 							</div>
 
 							<div className="rounded-xl overflow-hidden shadow-sm border border-border">
-								<div className="h-40 bg-secondary/10 flex items-center justify-center text-secondary overflow-hidden">
+								<div className="h-40 bg-primary/10 flex items-center justify-center text-primary overflow-hidden">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										viewBox="0 0 24 24"

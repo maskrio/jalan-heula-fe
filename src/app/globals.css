@@ -61,10 +61,10 @@
 	--popover: #ffffff;
 	--popover-foreground: #2a4a5c;
 
-	--primary: #6a8ba8;
+	--primary: #6d93b4;
 	--primary-foreground: #ffffff;
 
-	--secondary: #bea11d;
+	--secondary: #c0d8f2;
 	--secondary-foreground: #2a4a5c;
 
 	--muted: #e5edf5;
@@ -117,12 +117,12 @@
 	--popover-foreground: #ffffff;
 
 	/* Primary colors */
-	--primary: #145796;
+	--primary: #1f6bb3;
 	--primary-foreground: #ffffff;
 
 	/* Secondary colors */
-	--secondary: #e1a757;
-	--secondary-foreground: #041c32;
+	--secondary: #3b729f;
+	--secondary-foreground: #ffffff;
 
 	/* Muted colors */
 	--muted: #0a3a50;
@@ -190,5 +190,7 @@
 }
 
 .font-modern {
-  font-family: var(--font-geologica), "Geologica";
+  font-family: 'Montserrat', var(--font-geologica), "Geologica", system-ui, sans-serif;
+  font-feature-settings: "ss01" 1, "ss03" 1;
+  letter-spacing: -0.01em;
 }
