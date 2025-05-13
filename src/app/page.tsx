@@ -298,7 +298,7 @@ export default function Home() {
 									Destination Guides
 								</h3>
 								<p className="text-muted-foreground mb-4">
-									Comprehensive guides for the world's most
+									Comprehensive guides for the world&apos;s most
 									breathtaking destinations.
 								</p>
 								<Link
